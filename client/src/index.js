@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NoPage from "./pages/NoPage";
 import WheelFortune from "./pages/WheelOfFortune";
+import Account from "./pages/Account";
 
 
 import "./styles.css";
@@ -23,7 +24,8 @@ export default function App () {
           <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />  
-          <Route path="spin" element={<WheelFortune />} />   
+          <Route path="spin" element={<WheelFortune />} />  
+          <Route path="account" element={<Account />} /> 
           <Route path="*" element={<NoPage />} />    
         </Route>
       </Routes>      

@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from model import User
+from model import User, SpinRecord
 import json
 from bson import json_util
 from bson.objectid import ObjectId
@@ -43,3 +43,17 @@ async def fetch_one_user(email):
 async def delete_user(email):
     document = await collection.delete_one({"email": email})
     return document
+
+spinCollection = db.spinCollection
+
+async def insert_spin_record(spinInfo):
+    document = spinInfo
+    result = await spinCollection.insert_one(document)
+    return document
+
+async def get_all_userSpinRecord(email):
+    spins = []
+    cursor = spinCollection.find({"email": email})
+    async for document in cursor:
+        spins.append(SpinRecord(**document))    
+    return spins

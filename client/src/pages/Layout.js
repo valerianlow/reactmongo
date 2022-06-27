@@ -1,10 +1,11 @@
 import { Outlet, Link, useNavigate, Navigate } from "react-router-dom";
-import { Navbar } from 'react-bootstrap';
+import { Navbar, Dropdown } from 'react-bootstrap';
 import React, { useState, useEffect, useRef } from "react";
 import LoadingBar from 'react-top-loading-bar';
+import 'bootstrap/dist/css/bootstrap.css';
 
 export default function Layout() {
-  const [isLoggedIn, setisLoggedIn] = useState(JSON.parse(localStorage.getItem("user")) ? true : false);  
+  const [isLoggedIn, setisLoggedIn] = useState(JSON.parse(localStorage.getItem("user")) ? true : false);
   const [progress, setProgress] = useState(0);
 
   const navigate = useNavigate();
@@ -12,9 +13,8 @@ export default function Layout() {
 
   const isTimeout = useRef(false);
   const updateTimer = useRef();
-  const timer = useRef();
   const timeout = 5 * 60;
-  
+
 
   const eventHandler = () => {
     if (updateTimer.current) {
@@ -32,18 +32,19 @@ export default function Layout() {
   window.addEventListener("mousemove", eventHandler);
   window.addEventListener("scroll", eventHandler);
   window.addEventListener("keydown", eventHandler);
-  
-  while (document.readyState==='loading'){
+
+  while (document.readyState === 'loading') {
     setProgress(progress += 20);
   }
 
   useEffect(() => {
     setProgress(100);
+    var timer;
     console.log(isLoggedIn);
     if (timer) {
       clearInterval(timer);
     }
-    timer.current = setInterval(() => {
+    timer = setInterval(() => {
       console.log("looping");
       if (!isLoggedIn && JSON.parse(localStorage.getItem("user"))) {
         //console.log("logged in");
@@ -68,6 +69,7 @@ export default function Layout() {
         isTimeout.current = false;
       }
     }, 1000);
+    return () => { clearInterval(timer) }
   }, [isLoggedIn]);
 
   const logOut = () => {
@@ -75,18 +77,22 @@ export default function Layout() {
     setisLoggedIn(false);
   }
 
- 
-
   return (
     <>
-      <Navbar className="navBar" bg="light">
+      <Navbar className="navBar" bg="black">
         <Link className="navButtons" to="/">HOME</Link>
-        {isLoggedIn ? <Link className="navButtons" to="login" onClick={logOut}>LOGOUT</Link> :
-          <Link className="navButtons" to="Login">LOGIN</Link>
-        }
-        {isLoggedIn ? <Link className="navButtons" to="spin">GAME</Link> :
-          <Link className="navButtons" to="register">REGISTER</Link>
-        }
+        <Link className="navButtons" to={localStorage.getItem("user") ? "spin" : "login"}>GAME</Link>
+        <Dropdown id="account">          
+          <Dropdown.Toggle id="dropdown-autoclose-true"><i className="fa fa-user fa-lg"></i>
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="dropdownBox">
+            <Link className="dropdownItems" to="account">ACCOUNT</Link>
+            {isLoggedIn ? <Link className="dropdownItems" to="topup">TOP-UP</Link> : null}
+            {isLoggedIn ? <Link className="dropdownItems" to="login" onClick={logOut}>LOGOUT</Link> :
+              <Link className="dropdownItems" to="login">LOGIN/REGISTER</Link>
+            }
+          </Dropdown.Menu>
+        </Dropdown>
       </Navbar>
       <LoadingBar
         color='#f11946'

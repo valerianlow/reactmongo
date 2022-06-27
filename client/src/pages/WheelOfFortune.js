@@ -1,32 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {  useNavigate } from "react-router-dom";
 import { Wheel } from 'react-custom-roulette';
 import axios from 'axios';
 
 const data = [
-    { option: 'YOU LOSE' },
-    { option: 'YOU WIN' },
+    { option: 'LOSE' },
+    { option: 'WIN' },
 ]
 
 export default function WheelFortune() {
+    const navigate = useNavigate();       
     const [mustSpin, setMustSpin] = useState(false);
     const [inputVal, setInputVal] = useState(0);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const [lackOfBalance, setLackOfBalance] = useState(false);
     const [accBalance, setAccBalance] = useState(0);
-    const id = JSON.parse(localStorage.getItem('user')).id;
-    const currBalance = useRef(0);
+    const id = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : null;
+    const currBalance = useRef(0);    
 
     useEffect(() => {
-        axios.post(`http://localhost:8000/api/user/${id}`).then((response) => {
-            console.log(response.data);
-            currBalance.current = response.data.cash_balance;
-            setAccBalance(currBalance.current)
+        if (!localStorage.getItem("user")) {   
+            alert("PLEASE LOG IN");         
+            navigate("/login", {replace: true});
         }
-        ).catch((error) => {
-            if (error.response) {
-                console.log(error.response.data);
+        else{
+            axios.post(`http://localhost:8000/api/user/${id}`).then((response) => {
+                console.log(response.data);
+                currBalance.current = response.data.cash_balance;
+                setAccBalance(currBalance.current)
             }
-        });
+            ).catch((error) => {
+                if (error.response) {
+                    console.log(error.response.data);
+                }
+            });
+        }
     }, [])
 
     const handleSpinClick = () => {
@@ -38,7 +46,15 @@ export default function WheelFortune() {
             let newPrizeNumber = Math.floor(Math.random() * data.length);
             setPrizeNumber(newPrizeNumber);
             setLackOfBalance(false);
+            const spinInfo = { 
+                email: JSON.parse(localStorage.getItem('user')).email,
+                amount: parseInt(inputVal),
+                result: data[newPrizeNumber].option,
+                date: new Date().toString().substring(4,21)
+            }
+            console.log(spinInfo);
             newPrizeNumber ? currBalance.current += parseInt(inputVal) : currBalance.current -= parseInt(inputVal)
+            axios.post(`http://localhost:8000/api/spinResults/insert/`, spinInfo).then(res => console.log(res))
             axios.put(`http://localhost:8000/api/user/${id}/`, { cash_balance: currBalance.current })
                 .then((response) => {
                     console.log(response.data);

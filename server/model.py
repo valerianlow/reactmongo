@@ -31,3 +31,9 @@ class Update(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+class SpinRecord(BaseModel):
+    email: str
+    result: str
+    amount: int
+    date: str

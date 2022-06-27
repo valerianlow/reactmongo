@@ -1,10 +1,11 @@
+from numpy import insert
 from hashing import Hash
 from oauth import get_current_user
 from jwttoken import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-from model import User, Login, Register, Update
+from model import User, Login, Register, Update, SpinRecord
 import uvicorn
 
 from database import (
@@ -13,7 +14,9 @@ from database import (
     update_user,
     fetch_one_user,
     delete_user,
-    check_user_balance
+    check_user_balance,
+    insert_spin_record,
+    get_all_userSpinRecord
 )
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -95,6 +98,24 @@ async def delete_user(id):
         return "Successfully deleted user"
     raise HTTPException(404, f"There is no user with the email {id}")
 
+#Spin DB
+
+@app.post("/api/spinResults/insert/", response_model=SpinRecord)
+async def post_spin_record(spinInfo: SpinRecord):
+    spinDetails = spinInfo.dict()
+    print(spinDetails)
+    response = await insert_spin_record(spinDetails)
+    if response:
+        return response
+    raise HTTPException(400, "Something went wrong")
+
+@app.post("/api/spinResults/")
+async def get_user_by_email(userInfo: User):
+    email = userInfo.dict()["email"]
+    response = await get_all_userSpinRecord(email)
+    if response:
+        return response
+    raise HTTPException(404, f"There is no such user")
 
 if __name__ == '__main__':
     uvicorn.run("main:app",
@@ -103,3 +124,4 @@ if __name__ == '__main__':
                 #ssl_keyfile="./mykey.pem", 
                 #ssl_certfile="./mycert.pem"
                 )
+

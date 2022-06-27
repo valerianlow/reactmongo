@@ -23,8 +23,9 @@
     flex-direction: column;
 }
 
-h1 {
+h1,h2 {
     color: white;
+    margin-bottom: 15px;
 }
 
 .forms {
@@ -70,7 +71,7 @@ a {
 }
 
 a:hover {
-    opacity: 0.3 !important;
+    color: gray !important;
 }
 
 label {
@@ -149,7 +150,6 @@ input[type="submit"]:hover{
 }
 .navButtons {
     color: white;
-    padding:20px;
     margin: auto;
     font-size: 14px;
 }
@@ -175,11 +175,83 @@ input[type="submit"]:hover{
     text-align: center;
 }
 
+.dropdownItems {
+    color:white;
+    background-color: black;
+    display: block;
+    width: 100%;
+    padding: 10px;
+}
+
+.dropdownBox {
+    background-color:black;
+    top: 80% !important;  
+    right: 80% !important;  
+}
+
+#dropdown-autoclose-true {
+    background-color: black;
+    border: none;
+    box-shadow: none;
+    margin-left: 20px;
+}
+
+#account {
+    display: flex;
+    margin: auto;    
+}
+
+.fa-user {
+    margin: auto;
+    right: 120%;
+    color: white;
+}
+
 i {
     float: right;
     position: relative;
-    margin-top:-25px;
-    margin-right: 10px;
+    margin-top:-29px;
+    margin-right: 12px;
     color: gray;
 }
 
+.userInfoDiv {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.userInfo {
+    font-size: 16px;
+    color: white;
+    padding: 5px;
+}
+
+.filler {    
+    border: 1px solid gray;
+    border-width: 0.01em;
+}
+
+.horizontalDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.verticalDiv {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+    border: 1px solid gray;
+    border-width: 0.01em;
+}
+
+.resultsDiv {
+    width: 33%;
+    text-align: center;
+    float:none;
+    font-size: 16px;
+    color: white;
+    padding: 5px;
+    margin:auto;
+}
